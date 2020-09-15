@@ -26,7 +26,7 @@ data "aws_ami" "ubuntu" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-16.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-20.04-amd64-server-*"]
   }
   filter {
     name   = "virtualization-type"
@@ -46,7 +46,7 @@ locals {
 }
 
 resource "aws_launch_configuration" "wireguard_launch_config" {
-  name_prefix                 = "wireguard-${var.env}-"
+  name_prefix                 = "${var.prefix}wireguard-"
   image_id                    = var.ami_id == null ? data.aws_ami.ubuntu.id : var.ami_id
   instance_type               = var.instance_type
   key_name                    = var.ssh_key_id
@@ -75,26 +75,13 @@ resource "aws_autoscaling_group" "wireguard_asg" {
     create_before_destroy = true
   }
 
-  tags = [
-    {
-      key                 = "Name"
-      value               = aws_launch_configuration.wireguard_launch_config.name
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Project"
-      value               = "wireguard"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "env"
-      value               = var.env
-      propagate_at_launch = true
-    },
-    {
-      key                 = "tf-managed"
-      value               = "True"
-      propagate_at_launch = true
-    },
+  tags = [for key, value in
+    merge(var.default_tags, var.tags, {
+      "Name" = aws_launch_configuration.wireguard_launch_config.name
+      }) : {
+      key                 = key,
+      value               = value,
+      propagate_at_launch = true,
+    }
   ]
 }

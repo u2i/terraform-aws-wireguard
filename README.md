@@ -20,7 +20,8 @@ Before using this module, you'll need to generate a key pair for your server and
 |`subnet_ids`|`list`|Yes|A list of subnets for the Autoscaling Group to use for launching instances. May be a single subnet, but it must be an element in a list.|
 |`ssh_key_id`|`string`|Yes|A SSH public key ID to add to the VPN instance.|
 |`vpc_id`|`string`|Yes|The VPC ID in which Terraform will launch the resources.|
-|`env`|`string`|Optional - defaults to `prod`|The name of environment for WireGuard. Used to differentiate multiple deployments.|
+|`prefix`|`string`|Optional - defaults to empty string|Prefix for all resources.|
+|`tags`|`list`|Optional - defaults to empty list|Tags for all resources.|
 |`eip_id`|`string`|Optional|The [Elastic IP](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) ID to which the VPN server will attach. Useful for avoiding changing IPs.|
 |`target_group_arns`|`string`|Optional|The Loadbalancer Target Group to which the vpn server ASG will attach.|
 |`additional_security_group_ids`|`list`|Optional|Used to allow added access to reach the WG servers or allow loadbalancer health checks.|
