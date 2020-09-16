@@ -2,7 +2,7 @@ data "template_file" "user_data" {
   template = file("${path.module}/templates/user-data.txt")
 
   vars = {
-    wg_server_private_key = data.aws_ssm_parameter.wg_server_private_key.value
+    wg_server_private_key = data.aws_secretsmanager_secret_version.wg_server_private_key.secret_string
     wg_server_net         = var.wg_server_net
     wg_server_port        = var.wg_server_port
     peers                 = join("\n", data.template_file.wg_client_data_json.*.rendered)
